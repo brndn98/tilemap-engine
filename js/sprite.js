@@ -1,4 +1,4 @@
-export class Spritesheet {
+/* export  */ class Spritesheet {
   constructor({ texture, x, y, width, height, offsetX, offsetY }) {
     this.texture = texture;
     this.x = x ?? 0;
@@ -12,14 +12,14 @@ export class Spritesheet {
   }
 }
 
-export class Animation {
+/* export  */ class Animation {
   constructor({ name, frames }) {
     this.name = name;
     this.frames = frames;
   }
 }
 
-export class Sprite {
+/* export  */ class Sprite {
   constructor({
     spritesheet,
     position,

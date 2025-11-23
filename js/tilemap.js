@@ -21,7 +21,7 @@ class TilemapLayer {
   }
 }
 
-export class Tilemap {
+/* export  */ class Tilemap {
   constructor(tileset, data) {
     this.columns = data.tileswide;
     this.rows = data.tileshigh;
@@ -140,7 +140,7 @@ export class Tilemap {
   }
 }
 
-export class CustomTilemap {
+/* export  */ class CustomTilemap {
   constructor(tileset, layers, columns = 10, rows = 10, tileSize = 32) {
     this.columns = columns;
     this.rows = rows;

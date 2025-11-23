@@ -1,8 +1,8 @@
-import { CustomTilemap, Tilemap } from "./tilemap.js";
+/* import { CustomTilemap, Tilemap } from "./tilemap.js";
 import { Camera } from "./camera.js";
 import { Spritesheet } from "./sprite.js";
 import { Character, NonPlayableCharacter } from "./character.js";
-import { Controller, INPUT } from "./controller.js";
+import { Controller, INPUT } from "./controller.js"; */
 
 class Game {
   constructor(tilemap, camera, player, npcs) {

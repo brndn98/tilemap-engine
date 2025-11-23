@@ -1,7 +1,7 @@
-import { Sprite } from "./sprite.js";
-import { INPUT } from "./controller.js";
+/* import { Sprite } from "./sprite.js";
+import { INPUT } from "./controller.js"; */
 
-export class Character extends Sprite {
+/* export  */ class Character extends Sprite {
   constructor({
     game,
     spritesheet,
@@ -95,7 +95,7 @@ export class Character extends Sprite {
   }
 }
 
-export class NonPlayableCharacter extends Sprite {
+/* export  */ class NonPlayableCharacter extends Sprite {
   constructor({
     spritesheet,
     position,

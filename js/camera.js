@@ -1,6 +1,6 @@
-import { INPUT } from "./controller.js";
+/* import { INPUT } from "./controller.js"; */
 
-export class Camera {
+/* export  */ class Camera {
   constructor({ tilemap, tilesWide, tilesHigh, target }) {
     this.width = tilemap.tileSize * tilesWide;
     this.height = tilemap.tileSize * tilesHigh;

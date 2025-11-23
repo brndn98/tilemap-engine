@@ -1,4 +1,4 @@
-export const INPUT = {
+/* export  */ const INPUT = {
   LEFT: "LEFT",
   RIGHT: "RIGHT",
   UP: "UP",
@@ -19,7 +19,7 @@ const KEYMAP = {
   C: INPUT.CAMERA,
 };
 
-export class Controller {
+/* export  */ class Controller {
   constructor() {
     this.input = [];
 
