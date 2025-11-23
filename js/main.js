@@ -221,14 +221,14 @@ function loadResources({ tilesets = [], tilemaps = [], spritesheets = [] }) {
 window.addEventListener("load", () => {
   const resources = {
     tilesets: [
-      { name: "luna", src: "../assets/tilesets/la-luna-proto-sheet.png" },
+      { name: "luna", src: "./assets/tilesets/la-luna-proto-sheet.png" },
     ],
     tilemaps: [
-      { name: "luna", src: "../assets/tilemaps/la-luna-proto-sheet.json"}
+      { name: "luna", src: "./assets/tilemaps/la-luna-proto-sheet.json"}
     ],
     spritesheets: [
-      { name: "marciano", src: "../assets/spritesheets/marcianito-proto-sheet.png" },
-      { name: "gato", src: "../assets/spritesheets/gato-marciano-sheet.png" }
+      { name: "marciano", src: "./assets/spritesheets/marcianito-proto-sheet.png" },
+      { name: "gato", src: "./assets/spritesheets/gato-marciano-sheet.png" }
     ]
   };
   loadResources(resources);
