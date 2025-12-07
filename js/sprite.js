@@ -75,10 +75,12 @@ export class Sprite {
     if (distance <= speed) {
       this.position.x = targetPosition.x;
       this.position.y = targetPosition.y;
-
-      return distance;
+      // return distance;
+      this.moving = false;
+      return;
     }
     // when there is enough pixels left, update the current position in order to move towards the target position
+    this.moving = true; // remove for free movement instead of grid based
     // store the direction of the target position to move into
     // the direction is calculated from a normalized vector between the pixels it takes to move and the pixel distance of each coord
     const direction = {
@@ -92,10 +94,10 @@ export class Sprite {
 
     // update the amount of pixels it takes to reach the target position
     // then exit along with the remaining pixel amount
-    this.translate.x = targetPosition.x - this.position.x;
-    this.translate.y = targetPosition.y - this.position.y;
+    // this.translate.x = targetPosition.x - this.position.x;
+    // this.translate.y = targetPosition.y - this.position.y;
 
-    return Math.hypot(this.translate.x, this.translate.y);
+    // return Math.hypot(this.translate.x, this.translate.y);
   }
 
   /* 

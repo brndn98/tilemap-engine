@@ -82,15 +82,15 @@ export class Character extends Sprite {
     // calculate speed as pixels per second
     const scaledSpeed = this.speed * (deltaTime / 1000);
     // start moving into the target tile and retrieve the remaining distance in pixels to its position after each frame
-    // const translateDistance = this.moveTo(this.targetPosition, scaledSpeed);
-    const translateDistance = this.moveTo(this.targetPosition, this.speed);
+    this.moveTo(this.targetPosition, scaledSpeed);
+    //const translateDistance = this.moveTo(this.targetPosition, scaledSpeed);
+    //const translateDistance = this.moveTo(this.targetPosition, this.speed);
     // the character will be moving as long as there is still distance to translate
-    // this.moving = translateDistance >= scaledSpeed;
-    this.moving = translateDistance >= this.speed;
+    //this.moving = translateDistance >= scaledSpeed;
+    //this.moving = translateDistance >= this.speed;
     // reset the sprite animation to the start once the character stops moving and no input is yet entered
     if (!this.moving && !input) {
       this.stop(1);
-      console.log(this.position);
     }
   }
 }

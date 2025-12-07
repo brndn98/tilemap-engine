@@ -123,8 +123,8 @@ function setupCanvas({ tilesets, tilemaps, spritesheets }) {
     { name: INPUT.DOWN, frames: [0,1,2,3] }
   ];
   // init player sprite
-  // const player = new Character({ spritesheet: playerSheet, animations: playerAnimations, speed: 48 });
-  const player = new Character({ spritesheet: playerSheet, animations: playerAnimations, speed: 1 });
+  const player = new Character({ spritesheet: playerSheet, animations: playerAnimations, speed: 48 });
+  //const player = new Character({ spritesheet: playerSheet, animations: playerAnimations, speed: 1 });
   // set character initial position and frame 
   player.positionY = 6 * tilemap.tileSize;
   player.positionX = 3 * tilemap.tileSize;
@@ -221,14 +221,14 @@ function loadResources({ tilesets = [], tilemaps = [], spritesheets = [] }) {
 window.addEventListener("load", () => {
   const resources = {
     tilesets: [
-      { name: "luna", src: "../assets/tilesets/la-luna-proto-sheet.png" },
+      { name: "luna", src: "./assets/tilesets/la-luna-proto-sheet.png" },
     ],
     tilemaps: [
-      { name: "luna", src: "../assets/tilemaps/la-luna-proto-sheet.json"}
+      { name: "luna", src: "./assets/tilemaps/la-luna-proto-sheet.json"}
     ],
     spritesheets: [
-      { name: "marciano", src: "../assets/spritesheets/marcianito-proto-sheet.png" },
-      { name: "gato", src: "../assets/spritesheets/gato-marciano-sheet.png" }
+      { name: "marciano", src: "./assets/spritesheets/marcianito-proto-sheet.png" },
+      { name: "gato", src: "./assets/spritesheets/gato-marciano-sheet.png" }
     ]
   };
   loadResources(resources);
