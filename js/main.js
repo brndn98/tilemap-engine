@@ -43,7 +43,7 @@ class Game {
     });
     // character movement
     this.player.update(this.controller.currentInput, deltaTime, this.tilemap.collisions);
-    // camera movement
+    // camera movement, only when player is moving
     this.camera.update(this.controller.currentInput, deltaTime);
   }
 
@@ -149,7 +149,7 @@ function setupCanvas({ tilesets, tilemaps, spritesheets }) {
   // init camera, and set its target to follow the player
   // * force squared camera
   const CAMERA_TILES_WIDE = 10;
-  const camera = new Camera({ tilemap: tilemap, tilesWide: CAMERA_TILES_WIDE, tilesHigh: CAMERA_TILES_WIDE, target: player});
+  const camera = new Camera({ tilemap: tilemap, tilesWide: CAMERA_TILES_WIDE, tilesHigh: CAMERA_TILES_WIDE, speed: player.speed, target: player});
   // set npcs
   const npcs = [];
   npcs.push(npc);

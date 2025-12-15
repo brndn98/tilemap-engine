@@ -53,6 +53,8 @@ export class Tilemap {
     const offsetX = -camera.position.x + firstColumn * this.tileSize;
     const offsetY = -camera.position.y + firstRow * this.tileSize;
 
+    canvas.save();
+    canvas.strokeStyle = "#1c1c1c";
     for (let row = firstRow; row <= lastRow; row++) {
       for (let col = firstColumn; col <= lastColumn; col++) {
         // set the final rendered position for the tile
@@ -67,6 +69,7 @@ export class Tilemap {
         );
       }
     }
+    canvas.restore();
   }
 
   drawLayer(canvas, layer, camera) {
@@ -116,9 +119,8 @@ export class Tilemap {
     const offsetX = -camera.position.x + firstColumn * this.tileSize;
     const offsetY = -camera.position.y + firstRow * this.tileSize;
 
-    const latestFillStyle = canvas.fillStyle;
+    canvas.save();
     canvas.fillStyle = "#fcc603";
-
     for (let row = firstRow; row <= lastRow; row++) {
       for (let col = firstColumn; col <= lastColumn; col++) {
         // get tile index corresponding to the collision layer structure
@@ -136,7 +138,7 @@ export class Tilemap {
         );
       }
     }
-    canvas.fillStyle = latestFillStyle;
+    canvas.restore();
   }
 }
 

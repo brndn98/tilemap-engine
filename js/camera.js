@@ -1,7 +1,7 @@
 import { INPUT } from "./controller.js";
 
 export class Camera {
-  constructor({ tilemap, tilesWide, tilesHigh, target }) {
+  constructor({ tilemap, tilesWide, tilesHigh, speed, target }) {
     this.width = tilemap.tileSize * tilesWide;
     this.height = tilemap.tileSize * tilesHigh;
     this.position = { x: 0, y: 0 };
@@ -9,7 +9,7 @@ export class Camera {
       x: tilemap.columns * tilemap.tileSize - this.width,
       y: tilemap.rows * tilemap.tileSize - this.height,
     };
-    this.speed = 1;
+    this.speed = speed ?? 1;
     this.target = target ?? null;
     this.targetArea = {
       width: this.width - tilemap.tileSize,
@@ -51,14 +51,16 @@ export class Camera {
       nextPosition.y = targetY - this.deadzone.y;
     }
 
-    nextPosition.x = nextPosition.x * speed;
-    nextPosition.y = nextPosition.y * speed;
+    /* nextPosition.x = nextPosition.x * speed;
+    nextPosition.y = nextPosition.y * speed; */
 
     this.position.x = Math.max(0, Math.min(nextPosition.x, this.boundaries.x));
     this.position.y = Math.max(0, Math.min(nextPosition.y, this.boundaries.y));
   }
 
   update(input, deltaTime) {
+    const scaledSpeed = this.speed * (deltaTime / 1000);
+
     if (this.target) {
       //if (!input && !this.target.moving) return;
       this.follow(
@@ -66,8 +68,9 @@ export class Camera {
           targetX: this.target.position.x,
           targetY: this.target.position.y,
         },
-        this.speed
+        scaledSpeed
       );
+      //console.log("camera pos", this.position);
       return;
     }
     if (!this.freeMode) return;
@@ -88,6 +91,6 @@ export class Camera {
         translate.y = 1;
         break;
     }
-    this.move({ transX: translate.x, transY: translate.y }, this.speed);
+    this.move({ transX: translate.x, transY: translate.y }, scaledSpeed);
   }
 }

@@ -83,6 +83,7 @@ export class Character extends Sprite {
     const scaledSpeed = this.speed * (deltaTime / 1000);
     // start moving into the target tile and retrieve the remaining distance in pixels to its position after each frame
     this.moveTo(this.targetPosition, scaledSpeed);
+    console.log("character pos", this.position);
     //const translateDistance = this.moveTo(this.targetPosition, scaledSpeed);
     //const translateDistance = this.moveTo(this.targetPosition, this.speed);
     // the character will be moving as long as there is still distance to translate
