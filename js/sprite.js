@@ -144,8 +144,8 @@ export class Sprite {
     const latestFillStyle = canvas.fillStyle;
     canvas.fillStyle = "#0325ab";
     canvas.fillRect(
-      this.position.x - camera.position.x,
-      this.position.y - camera.position.y,
+      Math.round(this.position.x - camera.position.x),
+      Math.round(this.position.y - camera.position.y),
       this.tileSize * this.scale,
       this.tileSize * this.scale
     );
@@ -172,8 +172,12 @@ export class Sprite {
       this.spritesheet.y,
       this.spritesheet.width,
       this.spritesheet.height,
-      this.position.x + this.spritesheet.offsetX - camera.position.x,
-      this.position.y + this.spritesheet.offsetY - camera.position.y,
+      Math.round(
+        this.position.x + this.spritesheet.offsetX - camera.position.x
+      ),
+      Math.round(
+        this.position.y + this.spritesheet.offsetY - camera.position.y
+      ),
       this.width,
       this.height
     );

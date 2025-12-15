@@ -123,7 +123,7 @@ function setupCanvas({ tilesets, tilemaps, spritesheets }) {
     { name: INPUT.DOWN, frames: [0,1,2,3] }
   ];
   // init player sprite
-  const player = new Character({ spritesheet: playerSheet, animations: playerAnimations, speed: 48 });
+  const player = new Character({ spritesheet: playerSheet, animations: playerAnimations, speed: 24 });
   //const player = new Character({ spritesheet: playerSheet, animations: playerAnimations, speed: 1 });
   // set character initial position and frame 
   player.positionY = 6 * tilemap.tileSize;
