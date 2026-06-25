@@ -50,6 +50,9 @@ class Game {
   render(canvas) {
     // reverse the tilemap layer list to ascending order
     this.tilemap.layers.sort((current, next) => next.order - current.order);
+    // create the sprite list to sort it based on Y position before rendering
+    const spriteList = [...this.npcs, this.player];
+    spriteList.sort((current, next) => current.position.y - next.position.y);
     // background and foliage layers, below everything else in the render order
     this.tilemap.drawLayer(canvas, 0, this.camera);
     this.tilemap.drawLayer(canvas, 1, this.camera);
@@ -58,23 +61,17 @@ class Game {
       this.tilemap.drawGrid(canvas, this.camera);
       this.tilemap.drawCollisions(canvas, this.camera);
     }
-    // render npcs bounding box when debugging only
-    if (this.debugMode) {
-      this.npcs.forEach(npc => {
-        npc.drawHitbox(canvas, this.camera);
-      });  
-    }
-    this.npcs.forEach(npc => {
-      npc.drawSprite(canvas, this.camera);
-    });
-    // render player character bounding box when debugging only
-    if (this.debugMode) {
-      this.player.drawHitbox(canvas, this.camera);
-      if (this.player.moving) {
-        this.player.drawTarget(canvas, this.camera);
+    // render sprite list
+    spriteList.forEach(sprite => {
+      // render sprite bounding box when debugging only
+      if (this.debugMode) {
+        sprite.drawHitbox(canvas, this.camera);
+        if (sprite.moving) {
+          sprite.drawTarget(canvas, this.camera);
+        }
       }
-    }
-    this.player.drawSprite(canvas, this.camera);
+      sprite.drawSprite(canvas, this.camera);
+    });
     // foreground layer, above the player's sprite
     this.tilemap.drawLayer(canvas, 2, this.camera);
   }
