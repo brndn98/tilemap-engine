@@ -14,7 +14,7 @@ class Game {
     this.camera = camera;
 
     this.debugMode = false;
-    this.cameraMode = false;
+    this.freeCameraMode = false;
 
     window.addEventListener("keydown", event => {
       // toggle debug mode
@@ -23,7 +23,7 @@ class Game {
       }
       // toggle camera mode
       if (this.controller.currentInput === INPUT.CAMERA) {
-        this.cameraMode = !this.cameraMode;
+        this.freeCameraMode = !this.freeCameraMode;
       }
     });
     /* window.addEventListener("keyup", event => {
@@ -34,15 +34,15 @@ class Game {
   }
 
   update(deltaTime) {
-    if (this.cameraMode) {
-      this.camera.freeMode = true;
-    }
+    this.camera.freeMode = this.freeCameraMode;
     // npcs animations
     this.npcs.forEach(npc => {
       npc.update(deltaTime);
     });
     // character movement
-    this.player.update(this.controller.currentInput, deltaTime, this.tilemap.collisions);
+    if (!this.camera.freeMode) {
+      this.player.update(this.controller.currentInput, deltaTime, this.tilemap.collisions);
+    }
     // camera movement, only when player is moving
     this.camera.update(this.controller.currentInput, deltaTime);
   }

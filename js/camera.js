@@ -61,7 +61,7 @@ export class Camera {
   update(input, deltaTime) {
     const scaledSpeed = this.speed * (deltaTime / 1000);
 
-    if (this.target) {
+    if (!this.freeMode && this.target) {
       //if (!input && !this.target.moving) return;
       this.follow(
         {
@@ -73,7 +73,7 @@ export class Camera {
       //console.log("camera pos", this.position);
       return;
     }
-    if (!this.freeMode) return;
+    // if (!this.freeMode) return;
     // store the direction the camera is moving into
     // it remains zero when no input is entered
     const translate = { x: 0, y: 0 };

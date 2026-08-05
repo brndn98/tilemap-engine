@@ -14,7 +14,7 @@ const KEYMAP = {
   ArrowDown: INPUT.DOWN,
   q: INPUT.DEBUG,
   Q: INPUT.DEBUG,
-  Control: INPUT.DEBUG,
+  // Control: INPUT.DEBUG,
   c: INPUT.CAMERA,
   C: INPUT.CAMERA,
 };
