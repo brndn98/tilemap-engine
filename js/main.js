@@ -97,7 +97,7 @@ function setupCanvas({ tilesets, tilemaps, spritesheets }) {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0,
+    0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
     0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
@@ -143,6 +143,24 @@ function setupCanvas({ tilesets, tilemaps, spritesheets }) {
   npc.positionY = 12 * tilemap.tileSize;
   npc.positionX = 10 * tilemap.tileSize;
   npc.animation = "dance";
+  // ufo spritesheet
+  const ufoSheet = new Spritesheet({
+    texture: spritesheets.ovni,
+    x: 0,
+    y: 0,
+    width: 16,
+    height: 16,
+    offsetY: -3
+  });
+  const ufoAnimations = [
+    { name: "hover", totalFrames: 18 }
+  ];
+  // init ufo sprite
+  const ufo = new NonPlayableCharacter({ spritesheet: ufoSheet, animations: ufoAnimations, speed: 1, frameDuration: 100 });
+  // set ufo initial position
+  ufo.positionY = 12 * tilemap.tileSize;
+  ufo.positionX = 9 * tilemap.tileSize;
+  ufo.animation = "hover";
   // init camera, and set its target to follow the player
   // * force squared camera
   const CAMERA_TILES_WIDE = 10;
@@ -150,6 +168,7 @@ function setupCanvas({ tilesets, tilemaps, spritesheets }) {
   // set npcs
   const npcs = [];
   npcs.push(npc);
+  npcs.push(ufo);
   // init game
   const game = new Game(tilemap, camera, player, npcs);
 
@@ -225,7 +244,8 @@ window.addEventListener("load", () => {
     ],
     spritesheets: [
       { name: "marciano", src: "./assets/spritesheets/marcianito-proto-sheet.png" },
-      { name: "gato", src: "./assets/spritesheets/gato-marciano-sheet.png" }
+      { name: "gato", src: "./assets/spritesheets/gato-marciano-sheet.png" },
+      { name: "ovni", src: "./assets/spritesheets/ovni-proto-sheet.png" }
     ]
   };
   loadResources(resources);

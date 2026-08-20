@@ -47,8 +47,7 @@ export class Sprite {
       const frames = animation.frames ?? [];
       // when a frame range is not present the animation holds all the frames in the spritesheet
       if (!frames.length) {
-        const totalFrames =
-          this.spritesheet.framesWide * this.spritesheet.framesHigh;
+        const totalFrames = animation.totalFrames ?? this.spritesheet.framesWide * this.spritesheet.framesHigh;
         for (let frame = 0; frame < totalFrames; frame++) {
           frames.push(frame);
         }
