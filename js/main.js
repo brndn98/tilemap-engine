@@ -1,6 +1,6 @@
 import { CustomTilemap, Tilemap } from "./tilemap.js";
 import { Camera } from "./camera.js";
-import { Spritesheet } from "./sprite.js";
+import { Spritesheet, SpriteGroup } from "./sprite.js";
 import { Character, NonPlayableCharacter } from "./character.js";
 import { Controller, INPUT } from "./controller.js";
 
@@ -37,6 +37,23 @@ class Game {
     this.camera.freeMode = this.freeCameraMode;
     // npcs animations
     this.npcs.forEach(npc => {
+      // todo: move ufo animation to its own object class
+      if (npc.id === "ufo-group") {
+        // calculate speed as pixels per second
+        const scaledSpeed = npc.speed * (deltaTime / 1000);
+        const shipIndex = npc.sprites.findIndex(sprite => sprite.id === "ufo-ship");
+        const ufoShip = npc.sprites[shipIndex];
+        
+        // going up
+        if (npc.state === "down" && ufoShip.position.y <= 92) {
+          ufoShip.positionY = ufoShip.position.y + 1 * (scaledSpeed * 13);
+          if (ufoShip.position.y >= 92) npc.state = "up";
+        }
+        if (npc.state === "up" && ufoShip.position.y >= 86) {
+          ufoShip.positionY = ufoShip.position.y - 1 * (scaledSpeed * 13);
+          if (ufoShip.position.y <= 86) npc.state = "down";
+        }
+      }
       npc.update(deltaTime);
     });
     // character movement
@@ -78,8 +95,12 @@ class Game {
 }
 
 function setupCanvas({ tilesets, tilemaps, spritesheets }) {
+  // canvas for game
   const canvas = document.querySelector("canvas#game");
   const ctx = canvas.getContext("2d");
+  // canvas for debug specs
+  const debugCanvas = document.querySelector("canvas#debug");
+  const debugCtx = debugCanvas.getContext("2d");
 
   // canvas settings
   ctx.imageSmoothingEnabled = false;
@@ -153,14 +174,37 @@ function setupCanvas({ tilesets, tilemaps, spritesheets }) {
     offsetY: -3
   });
   const ufoAnimations = [
-    { name: "hover", totalFrames: 18 }
+    { name: "hover", totalFrames: 18 },
+    { name: "shadow-hover", frames: [18, 19, 20, 21, 22, 23, 24, 25] }
   ];
   // init ufo sprite
-  const ufo = new NonPlayableCharacter({ spritesheet: ufoSheet, animations: ufoAnimations, speed: 1, frameDuration: 100 });
+  const ufo = new NonPlayableCharacter({ id: "ufo-ship", spritesheet: ufoSheet, animations: ufoAnimations, speed: 1, frameDuration: 100 });
   // set ufo initial position
-  ufo.positionY = 12 * tilemap.tileSize;
-  ufo.positionX = 9 * tilemap.tileSize;
+  ufo.positionY = ufo.position.y - 5;
+  /* ufo.positionX = 1 * tilemap.tileSize; */
   ufo.animation = "hover";
+  // ufo spritesheet
+  const ufoShadowSheet = new Spritesheet({
+    texture: spritesheets.ovni,
+    x: 0,
+    y: 0,
+    width: 16,
+    height: 16,
+    offsetY: -3
+  });
+  // init ufo shadow sprite
+  const ufoShadow = new NonPlayableCharacter({ id: "ufo-shadow", spritesheet: ufoShadowSheet, animations: ufoAnimations, speed: 1, frameDuration: 100 });
+  // set ufo initial position
+  /* ufoShadow.positionY = 13 * tilemap.tileSize;
+  ufoShadow.positionX = 9 * tilemap.tileSize; */
+  ufoShadow.animation = "shadow-hover";
+
+  // * experimental - sprite group
+  const ufoGroup = new SpriteGroup({ id: 'ufo-group', sprites: [ufo, ufoShadow] });
+  ufoGroup.positionX = 1 * tilemap.tileSize;
+  ufoGroup.positionY = 6 * tilemap.tileSize;
+  ufoGroup.state = "up";
+
   // init camera, and set its target to follow the player
   // * force squared camera
   const CAMERA_TILES_WIDE = 10;
@@ -168,24 +212,44 @@ function setupCanvas({ tilesets, tilemaps, spritesheets }) {
   // set npcs
   const npcs = [];
   npcs.push(npc);
-  npcs.push(ufo);
+  //npcs.push(ufo);
+  //npcs.push(ufoShadow);
+  npcs.push(ufoGroup);
   // init game
   const game = new Game(tilemap, camera, player, npcs);
 
   // update canvas dimensions based on game settings
   canvas.width = camera.width;
   canvas.height = camera.height;
+  console.log(canvas.width, canvas.height);
 
   let lastTimestamp = 0;
   function animate(timestamp) {
-    // const deltaTime = (timestamp - lastTimestamp) / 1000;
     const deltaTime = timestamp - lastTimestamp;
+    const fps = deltaTime / 1000;
     lastTimestamp = timestamp;
     game.update(deltaTime);
     game.render(ctx);
+    debugCtx.clearRect(0, 0, debugCanvas.width, debugCanvas.height);
+    drawSpecs(debugCtx, [
+      { name: "deltaTime", value: deltaTime },
+      { name: "FPS", value: fps }
+    ]);
     requestAnimationFrame(animate);
   }
   requestAnimationFrame(animate);
+}
+
+function drawSpecs(canvas, specs) {
+  if (!specs.length) return;
+
+  canvas.font = "bold 16px monospace";
+  canvas.fillStyle = "#016137";
+  canvas.textBaseline = "top";
+  specs.forEach((spec, index) => {
+    const offsetY = 10 + 20 * index;
+    canvas.fillText(`${spec.name}: ${spec.value}`, 10, offsetY);
+  });
 }
 
 function trackLoadedResources(resources, count) {

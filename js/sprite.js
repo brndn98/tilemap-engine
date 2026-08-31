@@ -21,6 +21,7 @@ export class Animation {
 
 export class Sprite {
   constructor({
+    id,
     spritesheet,
     position,
     scale,
@@ -28,6 +29,7 @@ export class Sprite {
     animations,
     frameDuration,
   }) {
+    this.id = id ?? 'sprite';
     this.tileSize = tileSize ?? 16;
     this.spritesheet = spritesheet ?? new Spritesheet({ texture: "" });
     this.scale = scale ?? 1;
@@ -204,5 +206,67 @@ export class Sprite {
   /* gets the name of the current sprite animation */
   get animation() {
     return this.currentAnimation?.name ?? null;
+  }
+}
+
+export class SpriteGroup {
+  constructor({
+    id,
+    sprites,
+    position,
+    scale,
+    tileSize,
+    speed
+  }) {
+    this.id = id ?? 'sprite-group';
+    this.sprites = sprites ?? [];
+    this.position = position ?? { x: 0, y: 0 };
+    this.scale = scale ?? 1;
+    this.tileSize = tileSize ?? 16;
+    this.speed = speed ?? 1;
+
+    this.sprites.forEach(sprite => {
+      sprite.positionX = sprite.position.x + this.position.x;
+      sprite.positionY = sprite.position.y + this.position.y;
+    });
+  }
+
+  update(deltaTime) {
+    this.sprites.forEach(sprite => {
+      sprite.update(deltaTime);
+    });
+  }
+
+  drawSprite(canvas, camera) {
+    this.sprites.forEach(sprite => {
+      sprite.drawSprite(canvas, camera);
+    });
+  }
+
+  drawHitbox(canvas, camera) {
+    const latestFillStyle = canvas.fillStyle;
+    canvas.fillStyle = "#0325ab";
+    canvas.fillRect(
+      Math.round(this.position.x - camera.position.x),
+      Math.round(this.position.y - camera.position.y),
+      this.tileSize * this.scale,
+      this.tileSize * this.scale
+    );
+    canvas.fillStyle = latestFillStyle;
+  }
+
+  set positionX(x) {
+    this.position.x = x;
+
+    this.sprites.forEach(sprite => {
+      sprite.positionX = sprite.position.x + this.position.x;
+    });
+  }
+  set positionY(y) {
+    this.position.y = y;
+
+    this.sprites.forEach(sprite => {
+      sprite.positionY = sprite.position.y + this.position.y;
+    });
   }
 }

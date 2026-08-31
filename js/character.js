@@ -4,6 +4,7 @@ import { INPUT } from "./controller.js";
 export class Character extends Sprite {
   constructor({
     game,
+    id,
     spritesheet,
     position,
     scale,
@@ -13,6 +14,7 @@ export class Character extends Sprite {
     frameDuration,
   }) {
     super({
+      id,
       spritesheet,
       position,
       scale,
@@ -98,6 +100,7 @@ export class Character extends Sprite {
 
 export class NonPlayableCharacter extends Sprite {
   constructor({
+    id,
     spritesheet,
     position,
     scale,
@@ -107,6 +110,7 @@ export class NonPlayableCharacter extends Sprite {
     frameDuration,
   }) {
     super({
+      id,
       spritesheet,
       position,
       scale,
