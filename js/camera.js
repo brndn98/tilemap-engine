@@ -59,7 +59,8 @@ export class Camera {
   }
 
   update(input, deltaTime) {
-    const scaledSpeed = this.speed * (deltaTime / 1000);
+    //const scaledSpeed = this.speed * (deltaTime / 1000);
+    const scaledSpeed = this.speed * deltaTime;
 
     if (!this.freeMode && this.target) {
       //if (!input && !this.target.moving) return;

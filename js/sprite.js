@@ -13,9 +13,20 @@ export class Spritesheet {
 }
 
 export class Animation {
-  constructor({ name, frames }) {
+  constructor({ name, spritesheet, fps, frames, frameStart, totalFrames }) {
     this.name = name;
-    this.frames = frames;
+    this.spritesheet = spritesheet;
+    this.frameDuration = 1 / fps;
+    this.frames = frames ?? [];
+    // when a frame range is not present the animation holds all the frames in the spritesheet
+    if (!this.frames.length) {
+      const total = totalFrames ?? this.spritesheet.framesWide * this.spritesheet.framesHigh;
+      const offset = frameStart ?? 0;
+      for (let i = 0; i < total; i++) {
+        const frame = i + offset;
+        this.frames.push(frame);
+      }
+    }
   }
 }
 
@@ -44,26 +55,23 @@ export class Sprite {
     this.height = this.spritesheet.height * this.scale;
 
     // sprite animations
+    // todo: implement animation class
     this.animations = {};
     animations?.forEach((animation, index) => {
-      const frames = animation.frames ?? [];
-      // when a frame range is not present the animation holds all the frames in the spritesheet
-      if (!frames.length) {
-        const totalFrames = animation.totalFrames ?? this.spritesheet.framesWide * this.spritesheet.framesHigh;
-        for (let frame = 0; frame < totalFrames; frame++) {
-          frames.push(frame);
-        }
+      const animationConfig = animation;
+      if (!animationConfig.name) {
+        animationConfig.name = `anim_${index}`;
       }
-      this.animations[animation.name ?? `anim_${index}`] = {
-        name: animation.name ?? `anim_${index}`,
-        frames: frames,
-      };
+      animationConfig.spritesheet = this.spritesheet;
+      this.animations[animationConfig.name] = new Animation(animationConfig);
     });
     this.currentAnimation = null;
     this.currentFrame = 0;
     // time in miliseconds
-    this.frameDuration = frameDuration ?? 145;
-    this.frameTimer = this.frameDuration; // * workaround for the current animation loop logic, starts playing before the timer starts counting
+    // todo: remove this, frameDuration is already in each animation
+    this.frameDuration = frameDuration ? 0.016 * frameDuration : 0.016 * 1;
+    //this.frameTimer = this.frameDuration; // * workaround for the current animation loop logic, starts playing before the timer starts counting
+    this.frameTimer = 0;
   }
 
   moveTo(targetPosition, speed) {
@@ -130,7 +138,8 @@ export class Sprite {
     )
       return;
     this.currentFrame = atFrame;
-    this.frameTimer = this.frameDuration;
+    this.frameTimer = 0;
+    this.playback();
   }
 
   stop(atFrame = 0) {
@@ -138,12 +147,24 @@ export class Sprite {
     // prevent updating the frame when the next frame has already been played
     if (this.currentFrame === atFrame + 1) return;
     this.reset(atFrame);
-    this.playback();
+    //this.playback();
+  }
+
+  updateFramerate(deltaTime) {
+    if (!this.currentAnimation || !this.currentAnimation.frames.length) return;
+    // accumulate the engine actual frame duration(ms) until it reaches the current animation frame duration(ms)
+    // when frameTimer reaches the current animation frame duration(ms), play the next frame in said animation
+    if (this.frameTimer < this.currentAnimation.frameDuration) {
+      this.frameTimer += deltaTime;
+    } else {
+      this.frameTimer = 0;
+      this.playback();
+    }
   }
 
   drawHitbox(canvas, camera) {
     const latestFillStyle = canvas.fillStyle;
-    canvas.fillStyle = "#0325ab";
+    canvas.fillStyle = "#0325ab99";
     canvas.fillRect(
       Math.round(this.position.x - camera.position.x),
       Math.round(this.position.y - camera.position.y),
@@ -156,7 +177,7 @@ export class Sprite {
   drawTarget(canvas, camera) {
     if (!this.moving) return;
     const latestStrokeStyle = canvas.strokeStyle;
-    canvas.strokeStyle = "#c20262";
+    canvas.strokeStyle = "#c2026299";
     canvas.strokeRect(
       this.targetPosition.x - camera.position.x,
       this.targetPosition.y - camera.position.y,
@@ -245,7 +266,7 @@ export class SpriteGroup {
 
   drawHitbox(canvas, camera) {
     const latestFillStyle = canvas.fillStyle;
-    canvas.fillStyle = "#0325ab";
+    canvas.fillStyle = "#0325ab99";
     canvas.fillRect(
       Math.round(this.position.x - camera.position.x),
       Math.round(this.position.y - camera.position.y),

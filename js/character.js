@@ -41,12 +41,7 @@ export class Character extends Sprite {
       if (lastAnimation != input) this.reset(1);
     }
     // handle the current animation frame rate
-    if (this.frameTimer < this.frameDuration) {
-      this.frameTimer += deltaTime;
-    } else {
-      this.frameTimer = 0;
-      this.playback();
-    }
+    this.updateFramerate(deltaTime);
     // set the position for the next tile to move into based on the input received
     // only when the character has stopped moving
     const nextPosition = { x: this.targetPosition.x, y: this.targetPosition.y };
@@ -82,7 +77,7 @@ export class Character extends Sprite {
       }
     }
     // calculate speed as pixels per second
-    const scaledSpeed = this.speed * (deltaTime / 1000);
+    const scaledSpeed = this.speed * deltaTime;
     // start moving into the target tile and retrieve the remaining distance in pixels to its position after each frame
     this.moveTo(this.targetPosition, scaledSpeed);
     console.log("character pos", this.position);
@@ -123,11 +118,6 @@ export class NonPlayableCharacter extends Sprite {
 
   update(deltaTime) {
     // handle the current animation frame rate
-    if (this.frameTimer < this.frameDuration) {
-      this.frameTimer += deltaTime;
-    } else {
-      this.frameTimer = 0;
-      this.playback();
-    }
+    this.updateFramerate(deltaTime);
   }
 }

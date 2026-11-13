@@ -120,7 +120,7 @@ export class Tilemap {
     const offsetY = -camera.position.y + firstRow * this.tileSize;
 
     canvas.save();
-    canvas.fillStyle = "#fcc603";
+    canvas.fillStyle = "#fcc60399";
     for (let row = firstRow; row <= lastRow; row++) {
       for (let col = firstColumn; col <= lastColumn; col++) {
         // get tile index corresponding to the collision layer structure

@@ -41,6 +41,7 @@ class Game {
       if (npc.id === "ufo-group") {
         // calculate speed as pixels per second
         const scaledSpeed = npc.speed * (deltaTime / 1000);
+        //const scaledSpeed = npc.speed * deltaTime;
         const shipIndex = npc.sprites.findIndex(sprite => sprite.id === "ufo-ship");
         const ufoShip = npc.sprites[shipIndex];
         
@@ -112,13 +113,13 @@ function setupCanvas({ tilesets, tilemaps, spritesheets }) {
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,
+    0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,
     0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0,
+    0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
     0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
@@ -134,11 +135,12 @@ function setupCanvas({ tilesets, tilemaps, spritesheets }) {
     height: 32,
     offsetY: -16
   });
+  const playerFps = 12;
   const playerAnimations = [
-    { name: INPUT.RIGHT, frames: [12,13,14,15] },
-    { name: INPUT.LEFT, frames: [8,9,10,11] },
-    { name: INPUT.UP, frames: [4,5,6,7] },
-    { name: INPUT.DOWN, frames: [0,1,2,3] }
+    { name: INPUT.RIGHT, frames: [12,13,14,15], fps: playerFps },
+    { name: INPUT.LEFT, frames: [8,9,10,11], fps: playerFps },
+    { name: INPUT.UP, frames: [4,5,6,7], fps: playerFps },
+    { name: INPUT.DOWN, frames: [0,1,2,3], fps: playerFps }
   ];
   // init player sprite
   const player = new Character({ spritesheet: playerSheet, animations: playerAnimations, speed: 24 });
@@ -157,9 +159,9 @@ function setupCanvas({ tilesets, tilemaps, spritesheets }) {
     height: 24,
     offsetY: -10
   });
-  const npcAnimations = [{ name: "dance" }];
+  const npcAnimations = [{ name: "dance", fps: 12 }];
   // init npc sprite
-  const npc = new NonPlayableCharacter({ spritesheet: npcSheet, animations: npcAnimations, speed: 1, frameDuration: 100 });
+  const npc = new NonPlayableCharacter({ spritesheet: npcSheet, animations: npcAnimations, speed: 1, frameDuration: 5 });
   // set npc initial position
   npc.positionY = 12 * tilemap.tileSize;
   npc.positionX = 10 * tilemap.tileSize;
@@ -174,11 +176,11 @@ function setupCanvas({ tilesets, tilemaps, spritesheets }) {
     offsetY: -3
   });
   const ufoAnimations = [
-    { name: "hover", totalFrames: 18 },
-    { name: "shadow-hover", frames: [18, 19, 20, 21, 22, 23, 24, 25] }
+    { name: "hover", totalFrames: 18, fps: 12 },
+    { name: "shadow-hover", frameStart: 18, totalFrames: 8, fps: 12 }
   ];
   // init ufo sprite
-  const ufo = new NonPlayableCharacter({ id: "ufo-ship", spritesheet: ufoSheet, animations: ufoAnimations, speed: 1, frameDuration: 100 });
+  const ufo = new NonPlayableCharacter({ id: "ufo-ship", spritesheet: ufoSheet, animations: ufoAnimations, speed: 1 });
   // set ufo initial position
   ufo.positionY = ufo.position.y - 5;
   /* ufo.positionX = 1 * tilemap.tileSize; */
@@ -193,7 +195,7 @@ function setupCanvas({ tilesets, tilemaps, spritesheets }) {
     offsetY: -3
   });
   // init ufo shadow sprite
-  const ufoShadow = new NonPlayableCharacter({ id: "ufo-shadow", spritesheet: ufoShadowSheet, animations: ufoAnimations, speed: 1, frameDuration: 100 });
+  const ufoShadow = new NonPlayableCharacter({ id: "ufo-shadow", spritesheet: ufoShadowSheet, animations: ufoAnimations, speed: 1 });
   // set ufo initial position
   /* ufoShadow.positionY = 13 * tilemap.tileSize;
   ufoShadow.positionX = 9 * tilemap.tileSize; */
@@ -221,20 +223,47 @@ function setupCanvas({ tilesets, tilemaps, spritesheets }) {
   // update canvas dimensions based on game settings
   canvas.width = camera.width;
   canvas.height = camera.height;
-  console.log(canvas.width, canvas.height);
 
   let lastTimestamp = 0;
   function animate(timestamp) {
-    const deltaTime = timestamp - lastTimestamp;
-    const fps = deltaTime / 1000;
+    // deltaTime: time a frame lasts over a 60fps range (or depending on machine resources)
+    const deltaTime = (timestamp - lastTimestamp) / 1000;
+    // const deltaTime = timestamp - lastTimestamp;
+    // * alternativa para sacar la duracion de cada frame individual, dependiendo de un limite de fps flexible
+    // primero se calcula la diferencia de tiempo entre cada frame
+    // lastTimelapse = timestamp - lastTimestamp
+    // se calcula el total de frames en un segundo, en base a los ms dentro de 1seg
+    // 1000 / lastTimelapse
+    const fps = Math.min(1000 / deltaTime, 60);
+    const frameDuration = 1 / fps;
+    /*
+      todo: optimizar logica de frame rate del sprite
+      - deltaTime contiene la duracion(ms) en tiempo real de 1 frame del engine corriendo (variable)
+      - definir fps(int) deseado para cada animacion
+      - calcular duracion(ms) de cada frame de la animacion (ms = 1/fps)
+      - acumular duracion(ms) en tiempo real de cada frame del engine corriendo
+      - cambiar de frame en la animacion cuando la duracion(ms) de los frames del engine rebase la duracion(ms) de los fps de la animacion
+    */
+    // llamar update con la nueva duracion del frame
+    // game.update(frameDuration);
+
     lastTimestamp = timestamp;
+    /*
+      todo: optimizar frame rendering
+      - separar update y render, para dibujar solo cuando el frame lo requiera
+      - acumular estado del update
+    */
     game.update(deltaTime);
+    // game.update(frameDuration);
     game.render(ctx);
     debugCtx.clearRect(0, 0, debugCanvas.width, debugCanvas.height);
-    drawSpecs(debugCtx, [
-      { name: "deltaTime", value: deltaTime },
-      { name: "FPS", value: fps }
-    ]);
+    if (game.debugMode) {
+      drawSpecs(debugCtx, [
+        { name: "deltaTime", value: deltaTime },
+        { name: "FPS", value: Math.round(fps) },
+        { name: "1 frame duration", value: frameDuration }
+      ]);
+    }
     requestAnimationFrame(animate);
   }
   requestAnimationFrame(animate);
@@ -243,8 +272,8 @@ function setupCanvas({ tilesets, tilemaps, spritesheets }) {
 function drawSpecs(canvas, specs) {
   if (!specs.length) return;
 
-  canvas.font = "bold 16px monospace";
-  canvas.fillStyle = "#016137";
+  canvas.font = "bold 12px monospace";
+  canvas.fillStyle = "#b2de02";
   canvas.textBaseline = "top";
   specs.forEach((spec, index) => {
     const offsetY = 10 + 20 * index;
